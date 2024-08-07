@@ -36,7 +36,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               xmlns:style="http://schemas.android.com/apk/res-auto"
-              tools:context="org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity"
+              tools:context="org.firstinspires.ftc.teamcode.FtcRobotControllerActivity"
               android:focusable="true"
               android:id="@+id/entire_screen"
               android:orientation="vertical">

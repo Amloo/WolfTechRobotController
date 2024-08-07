@@ -1,6 +1,6 @@
 /* Copyright © 2023 North Paulding High School Robotics Team 16757 */
 
-package org.firstinspires.ftc.robotcontroller.internal;
+package org.firstinspires.ftc.teamcode;
 
 public class NueronLayer {
     double[][] layer;

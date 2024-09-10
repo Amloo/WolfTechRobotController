@@ -22,10 +22,10 @@ public class BasicMecanumDrive extends LinearOpMode {
         leftDriveBack  = hardwareMap.get(DcMotor.class, "backLeft");
         rightDriveBack = hardwareMap.get(DcMotor.class, "backRight");
 
-        leftDriveFront.setDirection(DcMotor.Direction.REVERSE);
-        rightDriveFront.setDirection(DcMotor.Direction.REVERSE);
-        leftDriveBack.setDirection(DcMotor.Direction.FORWARD);
-        rightDriveBack.setDirection(DcMotor.Direction.FORWARD);
+        leftDriveFront.setDirection(DcMotor.Direction.FORWARD);
+        rightDriveFront.setDirection(DcMotor.Direction.FORWARD);
+        leftDriveBack.setDirection(DcMotor.Direction.REVERSE);
+        rightDriveBack.setDirection(DcMotor.Direction.REVERSE);
 
         waitForStart();
         while (opModeIsActive()) {
@@ -53,9 +53,9 @@ public class BasicMecanumDrive extends LinearOpMode {
         bl -= gamepad1.right_stick_x;
         br += gamepad1.right_stick_x;
 
-        leftDriveFront.setPower(fl * 10);
-        rightDriveFront.setPower(fr * 10);
-        leftDriveBack.setPower(bl * 10);
-        rightDriveBack.setPower(br * 10);
+        leftDriveFront.setPower(fl);
+        rightDriveFront.setPower(fr);
+        leftDriveBack.setPower(bl);
+        rightDriveBack.setPower(br);
     }
 }

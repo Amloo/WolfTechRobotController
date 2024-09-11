@@ -53,9 +53,9 @@ public class BasicMecanumDrive extends LinearOpMode {
         bl -= gamepad1.right_stick_x;
         br += gamepad1.right_stick_x;
 
-        leftDriveFront.setPower(fl);
-        rightDriveFront.setPower(fr);
-        leftDriveBack.setPower(bl);
-        rightDriveBack.setPower(br);
+        leftDriveFront.setPower(fl * 0.5);
+        rightDriveFront.setPower(fr * 0.5);
+        leftDriveBack.setPower(bl * 0.5);
+        rightDriveBack.setPower(br * 0.5);
     }
 }

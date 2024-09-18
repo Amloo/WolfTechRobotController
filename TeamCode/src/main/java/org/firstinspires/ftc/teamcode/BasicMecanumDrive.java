@@ -17,10 +17,10 @@ public class BasicMecanumDrive extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        leftDriveFront = hardwareMap.get(DcMotor.class, "frontLeft");
-        rightDriveFront = hardwareMap.get(DcMotor.class, "frontRight");
-        leftDriveBack  = hardwareMap.get(DcMotor.class, "backLeft");
-        rightDriveBack = hardwareMap.get(DcMotor.class, "backRight");
+        leftDriveFront = hardwareMap.get(DcMotor.class, "leftFront");
+        rightDriveFront = hardwareMap.get(DcMotor.class, "rightFront");
+        leftDriveBack  = hardwareMap.get(DcMotor.class, "leftBack");
+        rightDriveBack = hardwareMap.get(DcMotor.class, "rightBack");
 
         leftDriveFront.setDirection(DcMotor.Direction.FORWARD);
         rightDriveFront.setDirection(DcMotor.Direction.FORWARD);

@@ -12,6 +12,8 @@ public class BasicMecanumDrive extends LinearOpMode {
     private DcMotor leftDriveBack = null;
     private DcMotor rightDriveBack = null;
 
+    private DcMotor lift = null;
+
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
@@ -27,9 +29,13 @@ public class BasicMecanumDrive extends LinearOpMode {
         leftDriveBack.setDirection(DcMotor.Direction.REVERSE);
         rightDriveBack.setDirection(DcMotor.Direction.REVERSE);
 
+        lift = hardwareMap.get(DcMotor.class, "lift");
+
         waitForStart();
         while (opModeIsActive()) {
             drive();
+
+            lift.setPower(gamepad1.right_trigger - gamepad1.left_trigger);
         }
     }
     void drive(){

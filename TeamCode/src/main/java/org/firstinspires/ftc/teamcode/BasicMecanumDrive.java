@@ -31,6 +31,8 @@ public class BasicMecanumDrive extends LinearOpMode {
 
         lift = hardwareMap.get(DcMotor.class, "lift");
 
+        lift.setDirection(DcMotor.Direction.REVERSE);
+
         waitForStart();
         while (opModeIsActive()) {
             drive();

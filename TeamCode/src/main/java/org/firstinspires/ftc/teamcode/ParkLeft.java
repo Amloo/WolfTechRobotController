@@ -32,6 +32,7 @@ public class ParkLeft extends LinearOpMode {
                 .strafeTo(new Vector2d(0, 54));
         Action trajectory = trajectoryBuilder.build();
 
+        waitForStart();
         Actions.runBlocking(trajectory);
     }
 }

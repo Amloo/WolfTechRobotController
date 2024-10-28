@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.CRServo;
 
 @TeleOp(name="Basic: Mecanum Drive", group="Linear Opmode")
@@ -13,7 +14,7 @@ public class BasicMecanumDrive extends LinearOpMode {
     private DcMotor leftDriveBack = null;
     private DcMotor rightDriveBack = null;
 
-    private DcMotor lift = null;
+    private DcMotorEx lift = null;
 
     private CRServo notClaw = null;
 
@@ -32,17 +33,24 @@ public class BasicMecanumDrive extends LinearOpMode {
         leftDriveBack.setDirection(DcMotor.Direction.REVERSE);
         rightDriveBack.setDirection(DcMotor.Direction.REVERSE);
 
-        lift = hardwareMap.get(DcMotor.class, "lift");
+        lift = hardwareMap.get(DcMotorEx.class, "lift");
 
         lift.setDirection(DcMotor.Direction.REVERSE);
+
+        lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         notClaw = hardwareMap.get(CRServo.class, "claw");
 
         waitForStart();
+        lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         while (opModeIsActive()) {
             drive();
 
-            lift.setPower(gamepad1.right_trigger - gamepad1.left_trigger);
+            lift.setPower(0);
+            if(lift.getCurrentPosition() < 16000) {
+                lift.setPower(gamepad1.right_trigger);
+            }
+            lift.setPower(lift.getPower() - gamepad1.left_trigger);
 
             if(gamepad1.right_bumper) {
                 notClaw.setPower(-1);
@@ -51,6 +59,9 @@ public class BasicMecanumDrive extends LinearOpMode {
             } else {
                 notClaw.setPower(0);
             }
+
+            telemetry.addData("Lift", lift.getCurrentPosition());
+            telemetry.update();
         }
     }
     void drive(){

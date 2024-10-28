@@ -54,7 +54,7 @@ public class BasicMecanumDrive extends LinearOpMode {
                 lift.setPower(gamepad1.right_trigger);
             }
             lift.setPower(lift.getPower() - gamepad1.left_trigger);
-            if(lift.getPower() == 0 && lift.getCurrentPosition() < 0) {
+            if(lift.getPower() == 0 && lift.getCurrentPosition() < 500) {
                 lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             }
 
@@ -65,9 +65,6 @@ public class BasicMecanumDrive extends LinearOpMode {
             } else {
                 notClaw.setPower(0);
             }
-
-            telemetry.addData("Lift", lift.getCurrentPosition());
-            telemetry.update();
         }
     }
     void drive(){

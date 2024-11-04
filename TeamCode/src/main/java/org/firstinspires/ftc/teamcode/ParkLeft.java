@@ -16,7 +16,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 import com.qualcomm.robotcore.hardware.DcMotor;
-
 import java.util.List;
 
 @Autonomous(name="Park Left", group="Park")
@@ -28,8 +27,9 @@ public class ParkLeft extends LinearOpMode {
         MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
 
         TrajectoryActionBuilder trajectoryBuilder = drive.actionBuilder(new Pose2d(0, 0, 0))
-                .strafeToSplineHeading(new Vector2d(-18, 54), 0)
-                .strafeTo(new Vector2d(0, 54));
+                .splineToConstantHeading(new Vector2d(54, 18), 0)
+                .waitSeconds(1)
+                .strafeTo(new Vector2d(54, 0));
         Action trajectory = trajectoryBuilder.build();
 
         waitForStart();

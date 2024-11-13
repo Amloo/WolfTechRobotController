@@ -51,9 +51,9 @@ public class BasicMecanumDrive extends LinearOpMode {
             }
             lift.setPower(0);
             if(lift.getCurrentPosition() < 16000) {
-                lift.setPower(gamepad1.right_trigger);
+                lift.setPower(gamepad1.left_trigger);
             }
-            lift.setPower(lift.getPower() - gamepad1.left_trigger);
+            lift.setPower(lift.getPower() - gamepad1.right_trigger);
             if(lift.getPower() == 0 && lift.getCurrentPosition() < 500) {
                 lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             }

@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp(name="Basic: Mecanum Drive", group="Linear Opmode")
 
@@ -16,7 +16,7 @@ public class BasicMecanumDrive extends LinearOpMode {
 
     private DcMotorEx lift = null;
 
-    private CRServo notClaw = null;
+    private Servo notClaw = null;
 
     @Override
     public void runOpMode() {
@@ -39,7 +39,7 @@ public class BasicMecanumDrive extends LinearOpMode {
 
         lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        notClaw = hardwareMap.get(CRServo.class, "claw");
+        notClaw = hardwareMap.get(Servo.class, "claw");
 
         waitForStart();
         lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -59,11 +59,11 @@ public class BasicMecanumDrive extends LinearOpMode {
             }
 
             if(gamepad1.right_bumper) {
-                notClaw.setPower(-1);
-            } else if (gamepad1.left_bumper) {
-                notClaw.setPower(1);
-            } else {
-                notClaw.setPower(0);
+                if(notClaw.getPosition() == 0) {
+                    notClaw.setPosition(1);
+                } else {
+                    notClaw.setPosition(0);
+                }
             }
         }
     }

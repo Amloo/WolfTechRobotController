@@ -22,7 +22,7 @@ public class BasicMecanumDrive extends LinearOpMode {
 
     private CRServo notClaw = null;
 
-    private DcMotor lift3 = null;
+    private DcMotorEx lift3 = null;
 
     private Servo claw = null;
     private Servo rotate = null;
@@ -58,9 +58,11 @@ public class BasicMecanumDrive extends LinearOpMode {
 
         notClaw = hardwareMap.get(CRServo.class, "notClaw");
 
-        lift3 = hardwareMap.get(DcMotor.class, "lift3");
+        lift3 = hardwareMap.get(DcMotorEx.class, "lift3");
 
         lift3.setDirection(DcMotor.Direction.REVERSE);
+
+        lift3.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         claw = hardwareMap.get(Servo.class, "claw");
         rotate = hardwareMap.get(Servo.class, "rotate");
@@ -71,6 +73,7 @@ public class BasicMecanumDrive extends LinearOpMode {
         waitForStart();
         lift1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         lift2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        lift3.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         while (opModeIsActive()) {
             drive();
 
@@ -91,12 +94,18 @@ public class BasicMecanumDrive extends LinearOpMode {
                 lift2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             }
 
-            if(gamepad1.right_bumper) {
+            if(lift3.getMode() != DcMotor.RunMode.RUN_WITHOUT_ENCODER) {
+                lift3.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            }
+            lift3.setPower(0);
+            if(lift3.getCurrentPosition() < 16000 && gamepad1.left_bumper) {
                 lift3.setPower(1);
-            } else if(gamepad1.left_bumper) {
+            }
+            if(gamepad1.right_bumper) {
                 lift3.setPower(-1);
-            } else {
-                lift3.setPower(0);
+            }
+            if(lift3.getPower() == 0 && lift3.getCurrentPosition() < 500) {
+                lift3.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             }
 
             if(gamepad1.x) {

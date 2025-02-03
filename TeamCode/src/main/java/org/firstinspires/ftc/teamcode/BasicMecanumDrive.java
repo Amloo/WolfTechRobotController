@@ -4,14 +4,10 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import org.firstinspires.ftc.robotcore.external.android.AndroidTextToSpeech;
 
 @TeleOp(name="Basic: Mecanum Drive", group="Linear Opmode")
 @Config
@@ -23,23 +19,14 @@ public class BasicMecanumDrive extends LinearOpMode {
     private DcMotor rightDriveBack = null;
 
     private DcMotorEx lift1 = null;
-    private DcMotor lift2 = null;
-
-    private Servo notClaw = null;
-
+    private DcMotorEx lift2 = null;
     private DcMotorEx lift3 = null;
 
     private Servo claw = null;
-    private CRServo rotate = null;
+    private CRServo notClaw = null;
 
     private boolean clawOpen = false;
     private ElapsedTime clawTime = new ElapsedTime();
-    private boolean rotateOpen = false;
-    private ElapsedTime rotateTime = new ElapsedTime();
-
-    private AndroidTextToSpeech tts = new AndroidTextToSpeech();
-    private String lastMessage;
-    public static String message = "";
 
     @Override
     public void runOpMode() {
@@ -58,72 +45,46 @@ public class BasicMecanumDrive extends LinearOpMode {
 
         lift1 = hardwareMap.get(DcMotorEx.class, "lift1");
         lift2 = hardwareMap.get(DcMotorEx.class, "lift2");
+        lift3 = hardwareMap.get(DcMotorEx.class, "lift3");
 
         lift1.setDirection(DcMotor.Direction.REVERSE);
-        lift2.setDirection(DcMotor.Direction.FORWARD);
+        lift2.setDirection(DcMotor.Direction.REVERSE);
+        lift3.setDirection(DcMotor.Direction.FORWARD);
 
         lift1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         lift2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        notClaw = hardwareMap.get(Servo.class, "notClaw");
-
-        lift3 = hardwareMap.get(DcMotorEx.class, "lift3");
-
-        lift3.setDirection(DcMotor.Direction.REVERSE);
-
         lift3.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         claw = hardwareMap.get(Servo.class, "claw");
-        rotate = hardwareMap.get(CRServo.class, "rotate");
+        notClaw = hardwareMap.get(CRServo.class, "notClaw");
+
+        notClaw.setDirection(DcMotor.Direction.FORWARD);
 
         clawTime.reset();
-        rotateTime.reset();
-
-        tts.initialize();
-        tts.setLanguage("gla");
 
         waitForStart();
-        lift1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        lift2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        lift3.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         while (opModeIsActive()) {
             drive();
 
-            if(lift1.getMode() != DcMotor.RunMode.RUN_WITHOUT_ENCODER) {
-                lift1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                lift2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            lift1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            lift2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            lift3.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+            lift1.setPower(gamepad1.right_trigger - gamepad1.left_trigger);
+            lift2.setPower(gamepad1.right_trigger - gamepad1.left_trigger);
+
+            if(gamepad1.right_bumper && (lift3.getCurrentPosition() < 780 || lift1.getCurrentPosition() > 100)) {
+                lift3.setPower(1);
+            } else if(gamepad1.left_bumper) {
+                lift3.setPower(-1);
+            } else {
+                lift3.setPower(0);
             }
-            lift1.setPower(0);
-            lift2.setPower(0);
-            if(lift1.getCurrentPosition() < 16000) {
-                lift1.setPower(gamepad1.left_trigger);
-                lift2.setPower(gamepad1.left_trigger);
-            }
-            lift1.setPower(lift1.getPower() - gamepad1.right_trigger);
-            lift2.setPower(lift2.getPower() - gamepad1.right_trigger);
-            if(lift1.getPower() == 0 && lift1.getCurrentPosition() < 500) {
+
+            if(gamepad1.start) {
                 lift1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 lift2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            }
-
-            if(lift3.getMode() != DcMotor.RunMode.RUN_WITHOUT_ENCODER) {
-                lift3.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            }
-            lift3.setPower(0);
-            if(lift3.getCurrentPosition() < 16000 && gamepad1.right_bumper) {
-                lift3.setPower(1);
-            }
-            if(gamepad1.left_bumper) {
-                lift3.setPower(-1);
-            }
-            if(lift3.getPower() == 0 && lift3.getCurrentPosition() < 500) {
                 lift3.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            }
-
-            if(gamepad1.x) {
-                notClaw.setPosition(1);
-            } else {
-                notClaw.setPosition(0);
             }
 
             if(gamepad1.a && clawTime.milliseconds() >= 250) {
@@ -137,29 +98,17 @@ public class BasicMecanumDrive extends LinearOpMode {
                 claw.setPosition(1);
             }
 
-            /*if(gamepad1.b && rotateTime.milliseconds() >= 250) {
-                rotateOpen = !rotateOpen;
-                rotateTime.reset();
-            }
-
-            if(rotateOpen) {
-                rotate.setPosition(0);
+            if(gamepad1.y) {
+                notClaw.setPower(1);
+            } else if(gamepad1.b) {
+                notClaw.setPower(-1);
             } else {
-                rotate.setPosition(1);
-            }*/
-            if(gamepad1.b) {
-                rotate.setPower(1);
-            }else if(gamepad1.y) {
-                rotate.setPower(-1);
-            }else{
-                rotate.setPower(0);
+                notClaw.setPower(0);
             }
 
-            if(message != lastMessage && message != null) {
-                tts.speak(message);
-            }
-            lastMessage = message;
-            telemetry.addData("From Addison", message);
+            telemetry.addData("lift1", lift1.getCurrentPosition());
+            telemetry.addData("lift2", lift2.getCurrentPosition());
+            telemetry.addData("lift3", lift3.getCurrentPosition());
             telemetry.update();
         }
     }

@@ -1,1 +1,1 @@
-This is an old high school robotics project and most of the code is amateurish, but I decided to leave it up because it does contain my first attempt at writing a neural network. Unfortunately I don't remember the entire process of making the network and I am not sure how well it works.
+This is an old high school robotics project and most of the code is amateurish, but I decided to leave it up because it does contain my first attempt at writing a feedforward neural network including a custom library to handle matrix multiplication.
